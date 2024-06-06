@@ -32,53 +32,55 @@ Then, mount the SD card on your filesystem.
 
 Download the Raspberry Pi Lite image from the official website.
 
-> [!WARNING] DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
+> [!TIP]
+> It is also possible to netinstall[^2], which is easier than the 
+> listed installation method. Follow the instructions on RPI docs.
+
+> [!WARNING]
+> DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
 > For whatever reason, some Eduroam configurations like to block Debian repositories, as well as 
-> (somehow) break tarballs by skipping certain files. Feel free to scream at your network administrator if that's the case! 
+> (somehow) break tarballs by skipping certain files while installing packages via `apt-get`
+> Feel free to scream at your network administrator if that's the case!
+> Netinstall is also not available on Eduroam.
 
-	a.) Go to https://www.raspberrypi.com/software/operating-systems/ , Download the 'Lite' version.
+1. Go to https://www.raspberrypi.com/software/operating-systems/ , Download the 'Lite' version.
 
-	b.) Verify the SHA256 Checksum:
-	
-	ℹ️ You can use multiple commands to accomplish it ( `openssl` or `shasum`, depending on which
-	you have currently installed on your machine:
- 	```
-	shasum -a 256 2024-03-15-raspios-bookworm-arm64-lite.img.xz | grep (shasum on the website)
-	```
- 
-Unzip the image and flash the card:
+2. Verify the SHA256 Checksum:
+
+ℹ️ There are multiple ways to do this. You may use `openssl` or `shasum`, depending on which
+you have currently installed:
+```
+shasum -a 256 2024-03-15-raspios-bookworm-arm64-lite.img.xz | grep (shasum on the website)
+```
+
+3. Unzip the image and flash the card:
 
 ```bash
 xzcat 2024-03-15-raspios-bookworm-arm64-lite.img.xz | dd of=/dev/sdX bs=4M status=progress
 ```
 
-If the file is corrupted xz utilities might throw some errors like "unrecognized file format" ,or 
-flash it instantly with 0/0 bytes written — be sure to check.
+If the file is corrupted xz utilities might throw some errors like `"unrecognized file format"` ,or 
+flash it instantly with `0/0` bytes written — be sure to check.
 
-Connect the Raspberry Pi Peripherals to set up the connection
-> [!WARNING] Do not connect the RPI to HEI networks like Eduroam, the network is extermely obtrusive, as it blocks
-> RPI/Debian repositories, as well as StackOverflow and StackExchange. It is impossible to netinstall
-> RPI OS on Eduroam.
+Connect the Raspberry Pi Peripherals to set up the connection to the internet
 
-Connect the Ethernet with RJ45 connector if needed. It will make it possible to netinstall[^2], which is easier than the 
-listed installation method. 
-
+## Wireless Network setup
 
 ### Set up ssh, internet connection and camera using raspi-config:
 
 Set up your user account if you have not already done so.
 
-1. Set up your wifi connection using raspi-config
+1. Set up your wifi connection using `raspi-config`
 
 ```System options -> Wireless LAN -> Enter SSID and Password```
 
 2. Enable VNC and SSH in raspi-config
 
-The second option requires internet connection.
+TODO
 
 3. Configure the options
 
-Reboot the raspi, connect the camera and enable it.
+	Reboot the raspi, connect the camera and enable it.
 	Enable X11 forwarding either in the raspi-config or 
 	through /etc/sshd_config/ file.
 
@@ -90,8 +92,9 @@ Reboot the raspi, connect the camera and enable it.
  	```
 	, then input your password.
 
-	ℹ️ If you would like to use X11 applications through X forwarding, append `-Y` or `-X`
-	to the command to forward the applications to your X server.
+   	> [!NOTE]
+    	> If you would like to use X11 applications through X forwarding, append `-Y` or `-X`
+	> to the command to forward the applications to your X server.
 
 	(Optional) Disconnect the peripherals (camera, monitor, keyboard)
 
@@ -104,16 +107,15 @@ Reboot the raspi, connect the camera and enable it.
 ROS 2 SETUP
 --------------------------------------------------------------------------------
 
-We will use instructions mixed from articles as there is no official guide for  installing it from source
-on Rasbian. 
-Additionally, it is possible to install ROS2 on any distro provided one uses python's venv to install nessecary packges 
-from pip aside from system packages.
-
-Further reading:
+This part is based on the following guides below:
 https://docs.ros.org/en/crystal/Installation/Linux-Install-Binary.htmlSecond part
 https://docs.ros.org/en/foxy/Installation/Alternatives/Ubuntu-Development-Setup.html
 
+Additionally, it is possible to install ROS2 on any distro provided one uses python's venv to install nessecary packges 
+from pip aside from system packages.
 
+
+## Adding the GPG keys
 
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
@@ -144,6 +146,8 @@ sudo apt update && sudo apt install -y \
   python3-pytest-rerunfailures \
   ros-dev-tools
 ```
+
+Run rosdep:
 
 
 --------------------------------------------------------------------------------------
