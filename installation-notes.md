@@ -108,8 +108,9 @@ ROS 2 SETUP
 --------------------------------------------------------------------------------
 
 This part is based on the following guides below:
-https://docs.ros.org/en/crystal/Installation/Linux-Install-Binary.htmlSecond part
+https://docs.ros.org/en/crystal/Installation/Linux-Install-Binary.html
 https://docs.ros.org/en/foxy/Installation/Alternatives/Ubuntu-Development-Setup.html
+
 
 Additionally, it is possible to install ROS2 on any distro provided one uses python's venv to install nessecary packges 
 from pip aside from system packages.
@@ -128,7 +129,7 @@ sudo apt update
 ```
 !! Don't skip ahead here as going ahead and installing dependencies might break your package system. !!
 
-Install ROS dev tools and flake8 lint extensions:
+## Install ROS dev tools and flake8 lint extensions:
 
 ```
 sudo apt update && sudo apt install -y \
@@ -147,7 +148,23 @@ sudo apt update && sudo apt install -y \
   ros-dev-tools
 ```
 
-Run rosdep:
+## Installing depenencies:
+
+Run:
+```
+sudo apt upgrade
+```
+
+Then run `rosdep`:
+
+```bash
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
+```
+
+You might need to skip some packages and install them manually.
+https://stackoverflow.com/questions/77899289/how-to-solve-the-error-cannot-locate-rosdep-definition-for-pcl (S**T SOURCE)
 
 
 --------------------------------------------------------------------------------------
