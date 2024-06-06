@@ -1,10 +1,9 @@
-This guide is based on existing ROS2 Documenation as well as
-Raspberry Pi Doccumentation[^1], multiple SO threads, and miscellaneous sources otherwise undocumented.
-!!! FIX THIS !!!
+This guide is based on existing ROS2 Documentation, as well as
+Raspberry Pi Docs [^1], multiple SO threads, and miscellaneous sources otherwise undocumented.
 
 
 
-# ROS2 on RPI SETUP
+# ROS2 on Raspberry Pi 4B SETUP
 
 
 ### SKIP THE FIRST PART IF THE RASPBERRY PI IS NOT TAKEN RIGHT OUT OF THE BOX
@@ -23,9 +22,9 @@ without DNS server blocks and bogus network configuration. (anti-example:eduroam
 
 -----------------------------------------------------------
 
-# FLASHING THE SYSTEM
+## FLASHING THE SYSTEM
 
-0.) Insert the microSD card slot into a computer with an SD card reader.
+0. Insert the microSD card slot into a computer with an SD card reader.
 You might want to get a microSD to SD adapter. Our kits come with one.
 
 Then, mount the SD card on your filesystem.
@@ -153,7 +152,8 @@ sudo apt update && sudo apt install -y \
 COMPILATION
 --------------------------------------------------------------------------------------
 
-Approach a) on the Raspi
+
+## Approach A: on the Raspi
 
 ! Requires a better disk or a swap space. !
 
@@ -167,7 +167,7 @@ sudo nano /etc/dphys-swapfile
 CONF_SWAPSIZE=100 # change this to 4096
 ```
 
-And override the MAX SWAPSIZE limit[^4]:
+And override the MAXSWAPSIZE limit[^4]:
 ```
 CONF_MAXSWAP=2048 # change this to 4096
 ```
@@ -179,24 +179,24 @@ colcon build --symlink-install
 It's not recommended as the potential Read/Writes during the compilation to 
 could wear out the SD card — this storage medium is not resistant.
 It is possible to get an official NVMe drive for the Raspberry Pi ( or just plug in a 
-USB drive) with a swapfile on it to use it as swap space. This has not been tested by me.
+USB drive) with a swapfile on it to use it as swap space. 
 
-> [!NOTE] Note that QT libraries will fail to compile if you don't have QT framework installed.
+> [!NOTE] Note that QT libraries will fail to compile as you don't have QT framework installed.
 
 
-Approach b) DOCKER
+## Approach B: DOCKER
 
 This approach is harder, but significantly faster in its compilation.
 Be aware that if you are missing any dependencies, you will be unable to continue —
 You will need to install the appriopriate dependencies on the raspberry pi.
 
-#1.Install the cross-compilation toolchain:
+0. Copy the libraries over the network.
+You can either `rsync` libraries or mount them using `sshfs`.
+
+You can also just use [sneakernet](https://en.wikipedia.org/wiki/Sneakernet) and just copy the files manually.
 
 
-#sudo apt-get install libc6-dev-armhf-cross g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf
-
-
-1. Download the cROScompile script
+2. Download the cROScompile script
 (i) This is a WIP script of mine that is supposed to automate the docker build process.
 
 The script either works in online or offline mode. Online mode detects the architecture as well
@@ -225,7 +225,7 @@ Execute it in offline mode, sync the packages in docker.
 
 
 
-### FINALIZING INSTALLATION: (both approaches)
+## FINALIZING INSTALLATION: (both approaches)
 
 Source the setup file.
 
@@ -240,7 +240,21 @@ OpenCV
 libboost-python-dev
 
 
-## References
+
+
+## 📖 Further reading 
+
+### ROS2 Installation on Debian
+* https://docs.ros.org/en/crystal/Installation/Linux-Install-Binary.htmlSecond part
+* https://docs.ros.org/en/foxy/Installation/Alternatives/Ubuntu-Development-Setup.html
+
+### Cross-compilation
+* https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki/
+* https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development-RPiOS/Development-setup.html
+* https://medium.com/@stonepreston/how-to-cross-compile-a-cmake-c-application-for-the-raspberry-pi-4-on-ubuntu-20-04-bac6735d36df
+
+
+
 [^1]:Links to main sources:
 https://www.raspberrypi.com/documentation/
 https://docs.ros.org/en/iron/index.html
@@ -250,13 +264,6 @@ https://docs.ros.org/en/iron/index.html
 [^3]:https://github.com/cyberbotics/epuck_ros2/blob/master/installation/cross_compile
 
 [^4]:https://forums.raspberrypi.com/viewtopic.php?t=353964
-
-## 📖 Further reading 
-
-###Cross-compilation
-https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki/
-https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development-RPiOS/Development-setup.html
-https://medium.com/@stonepreston/how-to-cross-compile-a-cmake-c-application-for-the-raspberry-pi-4-on-ubuntu-20-04-bac6735d36df
 
 
 
