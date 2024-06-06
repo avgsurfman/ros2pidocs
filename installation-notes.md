@@ -3,7 +3,8 @@ Raspberry Pi Docs [^1], multiple SO threads, and miscellaneous sources otherwise
 
 
 
-# ROS2 on Raspberry Pi 4B SETUP
+# ROS2 on Raspberry Pi
+A guide to setup and compile from source ROS2 on Debian bookworm.
 
 
 ### SKIP THE FIRST PART IF THE RASPBERRY PI IS NOT TAKEN RIGHT OUT OF THE BOX
@@ -24,14 +25,14 @@ without DNS server blocks and bogus network configuration. (anti-example:eduroam
 
 ## FLASHING THE SYSTEM
 
-0. Insert the microSD card slot into a computer with an SD card reader.
+Insert the microSD card slot into a computer with an SD card reader.
 You might want to get a microSD to SD adapter. Our kits come with one.
-
 Then, mount the SD card on your filesystem.
 
 
-1.) Download the Raspberry Pi Lite image from the official website:
-> [!CAUTION] DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
+Download the Raspberry Pi Lite image from the official website.
+
+> [!WARNING] DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
 > For whatever reason, some Eduroam configurations like to block Debian repositories, as well as 
 > (somehow) break tarballs by skipping certain files. Feel free to scream at your network administrator if that's the case! 
 
@@ -45,7 +46,7 @@ Then, mount the SD card on your filesystem.
 	shasum -a 256 2024-03-15-raspios-bookworm-arm64-lite.img.xz | grep (shasum on the website)
 	```
  
-2.) Unzip the image and flash the card:
+Unzip the image and flash the card:
 
 ```bash
 xzcat 2024-03-15-raspios-bookworm-arm64-lite.img.xz | dd of=/dev/sdX bs=4M status=progress
@@ -54,8 +55,7 @@ xzcat 2024-03-15-raspios-bookworm-arm64-lite.img.xz | dd of=/dev/sdX bs=4M statu
 If the file is corrupted xz utilities might throw some errors like "unrecognized file format" ,or 
 flash it instantly with 0/0 bytes written — be sure to check.
 
-3.) Connect the Raspberry Pi Peripherals to set up the connection
-
+Connect the Raspberry Pi Peripherals to set up the connection
 > [!WARNING] Do not connect the RPI to HEI networks like Eduroam, the network is extermely obtrusive, as it blocks
 > RPI/Debian repositories, as well as StackOverflow and StackExchange. It is impossible to netinstall
 > RPI OS on Eduroam.
@@ -64,38 +64,36 @@ Connect the Ethernet with RJ45 connector if needed. It will make it possible to 
 listed installation method. 
 
 
-4.)  Set up ssh, internet connection and camera using raspi-config:
+### Set up ssh, internet connection and camera using raspi-config:
 
-	Set up your user account if you have not already done so.
+Set up your user account if you have not already done so.
 
-	a)Set up your wifi connection using raspi-config
+1. Set up your wifi connection using raspi-config
 
-	System options -> Wireless LAN -> Enter SSID and Password
+```System options -> Wireless LAN -> Enter SSID and Password```
 
-	b) Enable VNC and SSH in raspi-config
+2. Enable VNC and SSH in raspi-config
 
-	The second option requires internet connection.
+The second option requires internet connection.
 
-	c) Configure the options
+3. Configure the options
 
-	Reboot the raspi, connect the camera and enable it.
+Reboot the raspi, connect the camera and enable it.
 	Enable X11 forwarding either in the raspi-config or 
 	through /etc/sshd_config/ file.
 
-
-	d) Verify SSH connectivity
+4. Verify SSH connectivity
 
 	Connect to your rasbian:
-
-	ssh -Y univangers@IP_ADR 
-
+	```bash
+	ssh -Y univangers@IP_ADR
+ 	```
 	, then input your password.
 
-	i. If you would like to see X11 applications, append -Y
+	ℹ️ If you would like to use X11 applications through X forwarding, append `-Y` or `-X`
 	to the command to forward the applications to your X server.
-	Otherwise omit the option.
 
-	e) Disconnect the peripherals (camera, monitor, keyboard)
+	(Optional) Disconnect the peripherals (camera, monitor, keyboard)
 
 	From now on, you will be able to connect to your Pi through the
 	network from any computer with ssh installed without the need to connect
