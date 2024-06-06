@@ -1,5 +1,6 @@
-### This guide is based on existing ROS2, ROS documentation as well as
-### Raspi Docs, multiple SO threads, and miscellaneous sources otherwise undocumented.
+This guide is based on existing ROS2 Documenation as well as
+Raspberry Pi Doccumentation[^1], multiple SO threads, and miscellaneous sources otherwise undocumented.
+!!! FIX THIS !!!
 
 
 
@@ -32,8 +33,8 @@ Then, mount the SD card on your filesystem.
 
 1.) Download the Raspberry Pi Lite image from the official website:
 > [!CAUTION] DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
-> For whatever reason, some EDUROAM configurations like to block Debian repositories, as well as 
-> (somehow) break tarballs by skipping certain files. Feel free to scream at your sysadmin if that's the case! 
+> For whatever reason, some Eduroam configurations like to block Debian repositories, as well as 
+> (somehow) break tarballs by skipping certain files. Feel free to scream at your network administrator if that's the case! 
 
 	a.) Go to https://www.raspberrypi.com/software/operating-systems/ , Download the 'Lite' version.
 
@@ -56,9 +57,13 @@ flash it instantly with 0/0 bytes written — be sure to check.
 
 3.) Connect the Raspberry Pi Peripherals to set up the connection
 
-	Warning: Do not connect the RPI to HEI networks like Eduroam, the network is extermely obtrusive as it blocks
-	RPI/Debian repositories as well as StackOverflow and StackExchange. It is impossible to netinstall
-	please check whether your network administator is blocking Cloudflare's DNS via 1.1.1.1 debug website
+> [!WARNING] Do not connect the RPI to HEI networks like Eduroam, the network is extermely obtrusive, as it blocks
+> RPI/Debian repositories, as well as StackOverflow and StackExchange. It is impossible to netinstall
+> RPI OS on Eduroam.
+
+Connect the Ethernet with RJ45 connector if needed. It will make it possible to netinstall[^2], which is easier than the 
+listed installation method. 
+
 
 4.)  Set up ssh, internet connection and camera using raspi-config:
 
@@ -153,28 +158,30 @@ Approach a) on the Raspi
 ! Requires a better disk or a swap space. !
 
 Change the raspberry Pi's space to above 4GB.
-
+```bash
 sudo dphys-swapfile swapoff
 sudo nano /etc/dphys-swapfile
+```
 
-CONF_SWAPSIZE=100 #change this to 4096
+```
+CONF_SWAPSIZE=100 # change this to 4096
+```
 
-And override the MAX SWAPSIZE limit:
-https://forums.raspberrypi.com/viewtopic.php?t=353964
-
+And override the MAX SWAPSIZE limit[^4]:
+```
 CONF_MAXSWAP=2048 # change this to 4096
-
+```
 
 Clone the source repositiories for the ROS2 version of choice, then:
-
+```bash
 colcon build --symlink-install
-
+```
 It's not recommended as the potential Read/Writes during the compilation to 
 could wear out the SD card — this storage medium is not resistant.
 It is possible to get an official NVMe drive for the Raspberry Pi ( or just plug in a 
 USB drive) with a swapfile on it to use it as swap space. This has not been tested by me.
 
-Also do note that QT libraries will fail if you don't have QT framework installed.
+> [!NOTE] Note that QT libraries will fail to compile if you don't have QT framework installed.
 
 
 Approach b) DOCKER
@@ -203,9 +210,13 @@ In that case it's just easier to do a sneakernet approach and copy the files ove
 <!> Check the dependencies if broken/not installed, and sync your changes with rsync inside of the docker.
 
 
+``` bash
+git clone https://github.com/avgsurfman/crospile.git
 ```
-git clone
-```
+
+
+
+a.)
 
 2. Execute it in online mode, OR
 Execute it in offline mode, sync the packages in docker. 
@@ -214,15 +225,39 @@ Execute it in offline mode, sync the packages in docker.
 
 
 
-FINALIZING INSTALLATION: (both approaches)
+### FINALIZING INSTALLATION: (both approaches)
 
 Source the setup file.
 
+```bash
 . /ros2_iron/install/setup.bash
-
+```
 Add it to your .bashrc file as to have it sourced on startup.
 
 
 Additional dependencies:
 OpenCV
 libboost-python-dev
+
+
+## References
+[^1]:Links to main sources:
+https://www.raspberrypi.com/documentation/
+https://docs.ros.org/en/iron/index.html
+
+[^2]:https://www.raspberrypi.com/documentation/computers/getting-started.html#install-over-the-network
+
+[^3]:https://github.com/cyberbotics/epuck_ros2/blob/master/installation/cross_compile
+
+[^4]:https://forums.raspberrypi.com/viewtopic.php?t=353964
+
+## 📖 Further reading 
+
+###Cross-compilation
+https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki/
+https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development-RPiOS/Development-setup.html
+https://medium.com/@stonepreston/how-to-cross-compile-a-cmake-c-application-for-the-raspberry-pi-4-on-ubuntu-20-04-bac6735d36df
+
+
+
+
