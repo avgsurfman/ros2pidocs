@@ -3,14 +3,14 @@
 
 
 
-# ROS2 SETUP
+# ROS2 on RPI SETUP
 
 
-### SKIP FIRST PART IF THE RASPBERRY PI IS NOT TAKEN RIGHT OUT OF THE BOX
+### SKIP THE FIRST PART IF THE RASPBERRY PI IS NOT TAKEN RIGHT OUT OF THE BOX
 
 -----------------------------------------------------------
 
-Preliniary steps:
+First:
 
 + Mount and install the radiators. Your Raspberry Pi might need to compile the code from the source, and
 radiators are necessary to help with termal throttling.
@@ -22,37 +22,45 @@ without DNS server blocks and bogus network configuration. (anti-example:eduroam
 
 -----------------------------------------------------------
 
-### FLASHING THE SYSTEM
+# FLASHING THE SYSTEM
 
-0.) Insert the SD card slot into a computer with an SD card reader.
-1.) Download the raspi lite from the official website:
-<!> DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
+0.) Insert the microSD card slot into a computer with an SD card reader.
+You might want to get a microSD to SD adapter. Our kits come with one.
+
+Then, mount the SD card on your filesystem.
+
+
+1.) Download the Raspberry Pi Lite image from the official website:
+> [!CAUTION] DO NOT DOWNLOAD ANYTHING OFF OF EDUROAM IF YOU DON'T WANT TO HAVE BROKEN PACKAGES
+> For whatever reason, some EDUROAM configurations like to block Debian repositories, as well as 
+> (somehow) break tarballs by skipping certain files. Feel free to scream at your sysadmin if that's the case! 
 
 	a.) Go to https://www.raspberrypi.com/software/operating-systems/ , Download the 'Lite' version.
 
 	b.) Verify the SHA256 Checksum:
 	
-	i You can use multiple commands to accomplish it ( `openssl` or `shasum`, depending on which
+	ℹ️ You can use multiple commands to accomplish it ( `openssl` or `shasum`, depending on which
 	you have currently installed on your machine:
-
+ 	```
 	shasum -a 256 2024-03-15-raspios-bookworm-arm64-lite.img.xz | grep (shasum on the website)
+	```
+ 
+2.) Unzip the image and flash the card:
 
-2.) unzip the image and flash the card:
-
-```
+```bash
 xzcat 2024-03-15-raspios-bookworm-arm64-lite.img.xz | dd of=/dev/sdX bs=4M status=progress
 ```
 
-If the file is corrupted xz utilities might throw some errors like "unrecognized file format" 
-or flash it instantly with 0/0 bytes written — be sure to check.
+If the file is corrupted xz utilities might throw some errors like "unrecognized file format" ,or 
+flash it instantly with 0/0 bytes written — be sure to check.
 
-3.) Connect the RaspberryPi Peripherals to set up the connection
+3.) Connect the Raspberry Pi Peripherals to set up the connection
 
 	Warning: Do not connect the RPI to HEI networks like Eduroam, the network is extermely obtrusive as it blocks
 	RPI/Debian repositories as well as StackOverflow and StackExchange. It is impossible to netinstall
 	please check whether your network administator is blocking Cloudflare's DNS via 1.1.1.1 debug website
 
-4)  Set up ssh, internet connection and camera using raspi-config:
+4.)  Set up ssh, internet connection and camera using raspi-config:
 
 	Set up your user account if you have not already done so.
 
