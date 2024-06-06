@@ -47,8 +47,8 @@ Download the Raspberry Pi Lite image from the official website.
 
 2. Verify the SHA256 Checksum:
 
-ℹ️ There are multiple ways to do this. You may use `openssl` or `shasum`, depending on which
-you have currently installed:
+	ℹ️ There are multiple ways to do this. You may use `openssl` or `shasum`, depending on which
+	you have currently installed:
 ```
 shasum -a 256 2024-03-15-raspios-bookworm-arm64-lite.img.xz | grep (shasum on the website)
 ```
@@ -118,8 +118,10 @@ from pip aside from system packages.
 
 ## Adding the GPG keys
 
+```bash
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
+```
 
 Add the repos:
 ```
@@ -127,7 +129,6 @@ sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.or
 
 sudo apt update
 ```
-!! Don't skip ahead here as going ahead and installing dependencies might break your package system. !!
 
 ## Install ROS dev tools and flake8 lint extensions:
 
@@ -163,8 +164,8 @@ rosdep update
 rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
 ```
 
-You might need to skip some packages and install them manually.
-https://stackoverflow.com/questions/77899289/how-to-solve-the-error-cannot-locate-rosdep-definition-for-pcl (S**T SOURCE)
+You might need to skip some packages and install them manually[^4].
+
 
 
 --------------------------------------------------------------------------------------
@@ -186,7 +187,7 @@ sudo nano /etc/dphys-swapfile
 CONF_SWAPSIZE=100 # change this to 4096
 ```
 
-And override the MAXSWAPSIZE limit[^4]:
+And override the MAXSWAPSIZE limit[^5]:
 ```
 CONF_MAXSWAP=2048 # change this to 4096
 ```
@@ -215,7 +216,7 @@ You can either `rsync` libraries or mount them using `sshfs`.
 You can also just use [sneakernet](https://en.wikipedia.org/wiki/Sneakernet) and just copy the files manually.
 
 
-2. Download the cROScompile script
+1. Download the cROScompile script
 (i) This is a WIP script of mine that is supposed to automate the docker build process.
 
 The script either works in online or offline mode. Online mode detects the architecture as well
@@ -226,23 +227,23 @@ but is less error-prone.
 one result in the entire stack exchange and it might be linked to using mismatched versions of rsync.
 In that case it's just easier to do a sneakernet approach and copy the files over locally.
 
-<!> Check the dependencies if broken/not installed, and sync your changes with rsync inside of the docker.
+<!> If compilation fails, check dependencies first. Compilation can also fail if you are using musl instead of gcc coreutils.
 
 
 ``` bash
 git clone https://github.com/avgsurfman/crospile.git
 ```
+Then:
+```bash
+./cROSpile.py --offline --arch=aarch64
+```
 
+In docker, if you haven't copied the libraries yet:
 
-
-a.)
-
-2. Execute it in online mode, OR
-Execute it in offline mode, sync the packages in docker. 
-
-
-
-
+```
+rsync -avz --rsync-path="sudo rsync" --delete pi@192.168.1.47:/{lib,usr} /home/develop/rootfs
+```
+Consider using a lighter cypher to give RPI less load.
 
 ## FINALIZING INSTALLATION: (both approaches)
 
@@ -252,11 +253,6 @@ Source the setup file.
 . /ros2_iron/install/setup.bash
 ```
 Add it to your .bashrc file as to have it sourced on startup.
-
-
-Additional dependencies:
-OpenCV
-libboost-python-dev
 
 
 
@@ -272,6 +268,11 @@ libboost-python-dev
 * https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development-RPiOS/Development-setup.html
 * https://medium.com/@stonepreston/how-to-cross-compile-a-cmake-c-application-for-the-raspberry-pi-4-on-ubuntu-20-04-bac6735d36df
 
+### CMAKE
+* https://cmake.org/cmake/help/book/mastering-cmake/index.html
+
+
+
 
 
 [^1]:Links to main sources:
@@ -282,7 +283,9 @@ https://docs.ros.org/en/iron/index.html
 
 [^3]:https://github.com/cyberbotics/epuck_ros2/blob/master/installation/cross_compile
 
-[^4]:https://forums.raspberrypi.com/viewtopic.php?t=353964
+[^4]:https://stackoverflow.com/questions/77899289/how-to-solve-the-error-cannot-locate-rosdep-definition-for-pcl
+
+[^5]:https://forums.raspberrypi.com/viewtopic.php?t=353964
 
 
 
