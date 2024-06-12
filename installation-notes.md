@@ -76,8 +76,6 @@ Set up your user account if you have not already done so.
 
 2. Enable VNC and SSH in raspi-config
 
-TODO
-
 3. Configure the options
 
 	Reboot the raspi, connect the camera and enable it.
